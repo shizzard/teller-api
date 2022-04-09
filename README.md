@@ -22,11 +22,11 @@ PROBLEMS
 - transactions are not fully proc-generated, thus the adjustments needed (date and balances)
 - from_string functions should be refactored (lots of shared code)
 - token might be optimized to to generate all accounts at once (be lazy)
+- logging is not production-ready
 
 
 PLAN
 
-- Logs
 - HTTP API (cowboy REST FSM)
 - Teller specifics (headers etc), off-switch
 - Monitoring

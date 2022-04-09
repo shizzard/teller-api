@@ -51,7 +51,13 @@ config :teller_api_http,
 
 config :logger,
   handle_otp_reports: true,
-  backends: [:console],
+  backends: [:console, {LoggerFileBackend, :file}],
   sync_threshold: 1000,
-  level: (System.get_env("TELLER_API_LOGGER_LEVEL") || "error") |> String.to_atom(),
   handle_sasl_reports: false
+
+config :logger, :console,
+  level: :critical
+
+config :logger, :file,
+  level: (System.get_env("TELLER_API_LOGGER_LEVEL") || "error") |> String.to_atom(),
+  path:  (System.get_env("TELLER_API_LOGGER_DIR") || ".") <> "/file.log"

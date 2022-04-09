@@ -2,7 +2,9 @@
 # Prepare
 
 APPLICATION_ROOT := $(abspath ./)
-APPLICATION_EXEC := $(APPLICATION_ROOT)/_build/dev/rel/teller_api/bin/teller_api
+LOG_ROOT := $(APPLICATION_ROOT)/_log
+BUILD_ROOT := $(APPLICATION_ROOT)/_build
+APPLICATION_EXEC := $(BUILD_ROOT)/dev/rel/teller_api/bin/teller_api
 MIX := $(shell which mix)
 LUX_ROOT := $(APPLICATION_ROOT)/_tools/lux
 LUX := $(LUX_ROOT)/bin/lux
@@ -31,6 +33,7 @@ RELX_REPLACE_OS_VARS ?= true
 # TELLER_VMARGS_... ?= ...
 
 TELLER_API_LOGGER_LEVEL ?= debug
+TELLER_API_LOGGER_DIR ?= $(LOG_ROOT)
 
 TELLER_API_PROCGEN_SECRET_KEY_B36 ?= devkey
 TELLER_API_PROCGEN_SECRET_KEY_B36_BASE ?= 64
@@ -57,7 +60,7 @@ TELLER_API_HTTP_CACHE_LIFETIME_SEC ?= 60
 
 .PHONY: all get-deps compile run
 
-all: get-deps $(APPLICATION_EXEC)
+all: get-deps $(LOG_ROOT) $(APPLICATION_EXEC)
 
 get-deps:
 	$(MIX) deps.get
@@ -65,12 +68,15 @@ get-deps:
 compile:
 	$(MIX) compile
 
+$(LOG_ROOT):
+	@mkdir -p $(LOG_ROOT)
+
 $(APPLICATION_EXEC): compile
 	$(MIX) release --overwrite
 
 run: $(APPLICATION_EXEC)
 	$(call print_app_env)
-	$(APPLICATION_ROOT)/_build/dev/rel/teller_api/bin/teller_api start_iex
+	$(BUILD_ROOT)/dev/rel/teller_api/bin/teller_api start_iex
 
 
 ################################################################################
@@ -117,5 +123,5 @@ clean:
 	$(MIX) clean --deps
 
 distclean:
-	rm -rf _build
+	rm -rf $(BUILD_ROOT) $(LOG_ROOT)
 

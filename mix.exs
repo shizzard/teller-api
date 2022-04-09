@@ -11,6 +11,7 @@ defmodule TellerApi.MixProject do
           version: "0.1",
           include_erts: true,
           applications: [
+            logger_file_backend: :permanent,
             logger: :permanent,
             decimal: :permanent,
             teller_api_procgen: :permanent,
@@ -22,6 +23,6 @@ defmodule TellerApi.MixProject do
   end
 
   defp deps do
-    []
+    [{:logger_file_backend, "~> 0.0.13"}]
   end
 end
