@@ -48,6 +48,8 @@ TELLER_API_PROCGEN_TRANSACTIONS_PROCESSING_STATUS_COMPLETE_CHANCE ?= 0.9
 
 TELLER_API_HTTP_PROTO ?= "http"
 TELLER_API_HTTP_HOST ?= "localhost"
+TELLER_API_HTTP_CACHE_LIMIT ?= 100
+TELLER_API_HTTP_CACHE_LIFETIME_SEC ?= 60
 
 
 ################################################################################

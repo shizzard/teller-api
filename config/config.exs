@@ -41,7 +41,13 @@ config :teller_api_procgen,
 
 config :teller_api_http,
   proto: System.get_env("TELLER_API_HTTP_PROTO") || "http",
-  host: System.get_env("TELLER_API_HTTP_HOST") || "localhost"
+  host: System.get_env("TELLER_API_HTTP_HOST") || "localhost",
+  cache_limit:
+    (System.get_env("TELLER_API_HTTP_CACHE_LIMIT") || "1000")
+    |> String.to_integer(),
+  cache_lifetime_sec:
+    (System.get_env("TELLER_API_HTTP_CACHE_LIFETIME_SEC") || "1800")
+    |> String.to_integer()
 
 config :logger,
   handle_otp_reports: true,
