@@ -1,40 +1,67 @@
-# TellerApi
+# TellerApi application
 
-**TODO: Add description**
+[Configuration](/doc/configuration.md)
 
-* TL;DR: start
-* Configuration
-* Tests
-  * Unit
-  * LUX
-  * Dialyzer
-* Concept
-  * Procgen
-  * HTTP
-  * Monitoring
+[Application description](/doc/application.md)
 
+[Tests](/doc/tests.md)
 
-PROBLEMS
+[Known issues](/doc/issues.md)
 
-- account depends on transactions (to calculate balance/ledger), thats why we cannot generate account without transactions
-- cache was implemented since procgen might be slow (see above)
-- cache entries expiration should be set to the end of the day, since the data is static
-- transactions are not fully proc-generated, thus the adjustments needed (date and balances)
-- from_string functions should be refactored (lots of shared code)
-- token might be optimized to to generate all accounts at once (be lazy)
-- logging is not production-ready
-- cowboy listeners should be configured properly for production environments
-- LUX tests assume you have `http` client installed
-- Probably LUX is not the best tool to test http calls; I would rather use pytest or something similar
-- cowboy does not send charset in the content-type header
-- 404 errors should be implemented with `resource_exists` cowboy handler, but it is much easier to go straight to the handler because of the data nature (procgen)
-- account resources (details, balances, etc.) are a mostly a boilerplate
-- get parameters are validated in a very simple way. In real application there sould be generalized validator
-- when getting a list of transactions from api.teller.io with a big count parameter, it actually returns that amount
+## TL;DR: start
 
+Application expects the following software to be installed:
 
-PLAN
+- Erlang/OTP (tested with 24.0.4)
+- Elixir (test with 1.13.3)
 
-- Documentation!
-- Monitoring
-- dialyzer
+To be able to run tests:
+
+- Python 3.10+
+- Python Requests library
+
+To build the release, run `make`:
+
+```
+  > make
+  /Users/shizz/.kiex/elixirs/elixir-1.13.3/bin/mix deps.get
+  Resolving Hex dependencies...
+  Dependency resolution completed:
+  ... deps information ...
+  /Users/shizz/.kiex/elixirs/elixir-1.13.3/bin/mix compile
+  ... compilation process ...
+  /Users/shizz/.kiex/elixirs/elixir-1.13.3/bin/mix release --overwrite
+  ... build release process ...
+
+  Release created at _build/dev/rel/teller_api!
+  ...
+```
+
+To run the application, execute `make run`:
+
+```
+  > make run
+  /Users/shizz/.kiex/elixirs/elixir-1.13.3/bin/mix compile
+  /Users/shizz/.kiex/elixirs/elixir-1.13.3/bin/mix release --overwrite
+  ... build release process ...
+
+  --   Application ENV  --
+  ... application configuration ...
+  --   Application ENV  --
+  /Users/shizz/code/teller_api/_build/dev/rel/teller_api/bin/teller_api start_iex
+  Erlang/OTP 24 [erts-12.0.3] [source] [64-bit] [smp:12:12] [ds:12:12:10] [async-threads:1] [jit]
+
+  Interactive Elixir (1.13.3) - press Ctrl+C to exit (type h() ENTER for help)
+  iex(teller_api@LT1-AL-013)1>
+```
+
+To generate a token to play with API, you can run elixir snippet:
+
+```
+iex(teller_api@LT1-AL-013)1> TellerApiProcgen.Token.new(100, TellerApiProcgen.Static.config()) |> TellerApiProcgen.Token.to_string
+"test_5j8wmb4o"
+```
+
+Here `100` is token id used to generate related data.
+
+For further information please refer to the links at the top of the page.
