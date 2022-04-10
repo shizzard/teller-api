@@ -21,3 +21,6 @@ Check if we get 404 Not Found response
   [invoke http-call /not-found test_faketoken 404]
   ??"code": "not_found"
   [invoke check-ok]
+
+[shell app]
+  [invoke stop-app]

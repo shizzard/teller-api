@@ -30,3 +30,6 @@ Check if we get 200 OK response with valid auth token
   ??"subtype"
   ??"type"
   [invoke check-ok]
+
+[shell app]
+  [invoke stop-app]

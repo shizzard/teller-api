@@ -1,4 +1,5 @@
 defmodule TellerApiHttp.Cowboy.RootHandler do
+  require Logger
   alias TellerApiHttp.Cowboy.Common, as: Common
 
   def init(req, state), do: Common.cb_init(req, state)
@@ -9,10 +10,8 @@ defmodule TellerApiHttp.Cowboy.RootHandler do
   def is_authorized(req, state), do: Common.cb_is_authorized(req, state)
 
   def to_json(req, state) do
-    req = :cowboy_req.reply(200, Common.teller_api_headers(), Jason.encode!(body()), req)
+    req = Common.respond(200, %{links: %{accounts: TellerApiHttp.link_accounts()}}, req, state)
 
     {:stop, req, state}
   end
-
-  defp body(), do: %{links: %{accounts: TellerApiHttp.link_accounts()}}
 end

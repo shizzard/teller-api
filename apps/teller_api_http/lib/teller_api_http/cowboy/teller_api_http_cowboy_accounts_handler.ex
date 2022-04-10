@@ -14,8 +14,7 @@ defmodule TellerApiHttp.Cowboy.AccountsHandler do
   def to_json(req, state) do
     token_data = TAH.token_fetch(CommonState.auth_token(state))
 
-    req =
-      :cowboy_req.reply(200, Common.teller_api_headers(), Jason.encode!(body(token_data)), req)
+    req = Common.respond(200, body(token_data), req, state)
 
     {:stop, req, state}
   end

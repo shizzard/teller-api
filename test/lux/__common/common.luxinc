@@ -26,3 +26,10 @@
   ?$iex_prompt
   [progress (application started)]
 [endmacro]
+
+[macro stop-app]
+  [progress (stopping application)]
+  !:erlang.halt()
+  [progress (application stopped)]
+  [invoke check-ok]
+[endmacro]

@@ -29,6 +29,8 @@ PROBLEMS
 - cowboy does not send charset in the content-type header
 - 404 errors should be implemented with `resource_exists` cowboy handler, but it is much easier to go straight to the handler because of the data nature (procgen)
 - account resources (details, balances, etc.) are a mostly a boilerplate
+- get parameters are validated in a very simple way. In real application there sould be generalized validator
+- when getting a list of transactions from api.teller.io with a big count parameter, it actually returns that amount
 
 
 PLAN

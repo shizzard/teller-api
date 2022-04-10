@@ -73,8 +73,8 @@ defmodule TellerApiProcgenTest do
 
   test "random decimal bounds lower/upper" do
     {_, x} = TAP.decimal(pg_state(), 10, 20, 1)
-    assert Decimal.compare(x, Decimal.new(10)) == :gt
-    assert Decimal.compare(x, Decimal.new(20)) == :lt
+    assert Decimal.compare(x, Decimal.new(9)) == :gt
+    assert Decimal.compare(x, Decimal.new(21)) == :lt
   end
 
   test "random decimal repeatable" do

@@ -1,14 +1,23 @@
 defmodule TellerApiHttp.Cowboy.Common do
   defmodule State do
     @state_key_auth_token :common_state_key_auth_token
+    @state_key_request_id :common_state_key_request_id
     def auth_token(state), do: Map.fetch!(state, @state_key_auth_token)
     def auth_token(state, value), do: Map.put(state, @state_key_auth_token, value)
+    def request_id(state), do: Map.fetch!(state, @state_key_request_id)
+    def request_id(state, value), do: Map.put(state, @state_key_request_id, value)
   end
 
-  alias TellerApiHttp.Static, as: Static
+  use Bitwise
   require Logger
+  alias TellerApiHttp.Static, as: Static
 
-  def cb_init(req, state), do: {:cowboy_rest, req, state}
+  def cb_init(req, state) do
+    request_id = generate_request_id()
+    Logger.info("[#{request_id}] request #{:cowboy_req.path(req)}")
+    {:cowboy_rest, req, State.request_id(state, request_id)}
+  end
+
   def cb_allowed_methods(req, state), do: {["GET", "HEAD"], req, state}
   def cb_known_methods(req, state), do: {["GET", "HEAD"], req, state}
 
@@ -24,7 +33,19 @@ defmodule TellerApiHttp.Cowboy.Common do
     end
   end
 
-  def teller_api_headers(), do: %{"content-type" => "application/json"}
+  def respond(code, body, req, state), do: respond(code, [], body, req, state)
+
+  def respond(code, headers, body, req, state) do
+    Logger.info("[#{State.request_id(state)}] response #{code}")
+    :cowboy_req.reply(code, headers ++ teller_api_headers(state), Jason.encode!(body), req)
+  end
+
+  defp teller_api_headers(state),
+    do: %{
+      "content-type" => "application/json",
+      "server" => "Teller API",
+      "x-request-id" => State.request_id(state)
+    }
 
   defp is_authorized_check_token(token, req, state) do
     case TellerApiProcgen.Token.valid?(token, TellerApiProcgen.Static.config()) do
@@ -34,14 +55,10 @@ defmodule TellerApiHttp.Cowboy.Common do
   end
 
   defp is_authorized_forbidden(req, state) do
-    req =
-      :cowboy_req.reply(
-        401,
-        teller_api_headers(),
-        Jason.encode!(Static.error_forbidden()),
-        req
-      )
-
+    req = respond(401, Static.error_forbidden(), req, state)
     {:stop, req, state}
   end
+
+  defp generate_request_id(),
+    do: ((1 <<< 64) - 1) |> :rand.uniform() |> TellerApiProcgen.Base36.encode()
 end

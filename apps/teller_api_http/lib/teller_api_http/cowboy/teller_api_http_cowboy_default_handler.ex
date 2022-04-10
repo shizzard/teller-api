@@ -1,4 +1,5 @@
 defmodule TellerApiHttp.Cowboy.DefaultHandler do
+  require Logger
   alias TellerApiHttp.Static, as: Static
   alias TellerApiHttp.Cowboy.Common, as: Common
 
@@ -9,13 +10,7 @@ defmodule TellerApiHttp.Cowboy.DefaultHandler do
   def charsets_provided(req, state), do: Common.cb_charsets_provided(req, state)
 
   def to_json(req, state) do
-    req =
-      :cowboy_req.reply(
-        404,
-        Common.teller_api_headers(),
-        Jason.encode!(Static.error_not_found()),
-        req
-      )
+    req = Common.respond(404, Static.error_not_found(), req, state)
 
     {:stop, req, state}
   end

@@ -1,5 +1,6 @@
 [global auth_token=test_3p63tqq]
 [global account_id=acc_babwpnaxf1xa]
+[global transaction_id=txn_14sjt5fwfp30n]
 
 [macro http-call uri token code]
   !http http://localhost:8080$uri --pretty format --auth $token:

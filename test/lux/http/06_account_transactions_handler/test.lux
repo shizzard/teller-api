@@ -1,0 +1,65 @@
+[doc]
+User can get list of transactions
+
+Check if we get 200 OK response with valid auth token
+Check if we get 404 Not Found with valid auth token and invalid account_id
+Check if we can limit transactions count with `count` request parameter
+Check if we can shift transactions list with `from_id` request parameter
+[enddoc]
+
+[include ../../__common/common.luxinc]
+[include ../../__common/http.luxinc]
+
+[shell app]
+  [invoke start-app]
+
+[shell success]
+  [progress (check list transactions)]
+  [invoke http-call /accounts/$account_id/transactions $auth_token 200]
+  ??"account_id"
+  ??"amount"
+  ??"date"
+  ??"description"
+  ??"details"
+  ??"category"
+  ??"counterparty"
+  ??"name"
+  ??"type"
+  ??"processing_status"
+  ??"id"
+  ??"links"
+  ??"account"
+  ??"self"
+  ??"running_balance"
+  ??"status"
+  ??"type"
+  [invoke check-ok]
+
+[shell not-found]
+  [progress (check not-found)]
+  [invoke http-call /accounts/acc_fakeaccount/transactions $auth_token 404]
+  [invoke check-ok]
+
+[shell count]
+  [progress (check count parameter)]
+  [invoke http-call /accounts/$account_id/transactions?count=2 $auth_token 200]
+  ??"account_id"
+  ??"account_id"
+  [invoke check-ok]
+
+[shell from_id]
+  [progress (check from_id parameter)]
+  [invoke http-call /accounts/$account_id/transactions?from_id=$transaction_id $auth_token 200]
+  ??"account_id"
+  ??"account_id"
+  ??"account_id"
+  [invoke check-ok]
+
+[shell from_id_count]
+  [progress (check from_id and count parameter)]
+  [invoke http-call /accounts/$account_id/transactions?from_id=$transaction_id\&count=1 $auth_token 200]
+  ??"account_id"
+  [invoke check-ok]
+
+[shell app]
+  [invoke stop-app]

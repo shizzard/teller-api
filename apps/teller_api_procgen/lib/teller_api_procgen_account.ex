@@ -125,7 +125,7 @@ defmodule TellerApiProcgen.Account do
       t
       | balances_available: balances_available_adjusted,
         balances_ledger: balances_ledger_adjusted,
-        trxs: List.flatten(trxs)
+        trxs: trxs |> List.flatten()
     }
   end
 

@@ -36,3 +36,6 @@ Check if we get 404 Not Found with valid auth token and invalid account_id
   [invoke http-call /accounts/acc_fakeaccount $auth_token 404]
   ??"code": "not_found"
   [invoke check-ok]
+
+[shell app]
+  [invoke stop-app]

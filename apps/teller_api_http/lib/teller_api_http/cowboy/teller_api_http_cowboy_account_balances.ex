@@ -19,21 +19,8 @@ defmodule TellerApiHttp.Cowboy.AccountBalancesHandler do
 
     req =
       case Map.has_key?(token_data.accounts, account_id) do
-        true ->
-          :cowboy_req.reply(
-            200,
-            Common.teller_api_headers(),
-            Jason.encode!(body(token_data.accounts[account_id])),
-            req
-          )
-
-        false ->
-          :cowboy_req.reply(
-            404,
-            Common.teller_api_headers(),
-            Jason.encode!(Static.error_not_found()),
-            req
-          )
+        true -> Common.respond(200, body(token_data.accounts[account_id]), req, state)
+        false -> Common.respond(404, Static.error_not_found(), req, state)
       end
 
     {:stop, req, state}
