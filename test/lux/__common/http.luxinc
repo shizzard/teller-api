@@ -1,0 +1,20 @@
+[global auth_token=test_3p63tqq]
+[global account_id=acc_babwpnaxf1xa]
+
+[macro http-call uri token code]
+  !http http://localhost:8080$uri --pretty format --auth $token:
+  [invoke match-http-code $code]
+  [invoke match-http-header-value content-type application/json]
+[endmacro]
+
+[macro match-http-code code]
+  ??HTTP/1.1 $code
+[endmacro]
+
+[macro match-http-header-exists header]
+  ??$header:
+[endmacro]
+
+[macro match-http-header-value header value]
+  ??$header: $value
+[endmacro]

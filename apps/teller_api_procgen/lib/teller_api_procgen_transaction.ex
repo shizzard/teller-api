@@ -12,8 +12,6 @@ defmodule TellerApiProcgen.Transaction do
   alias TellerApiProcgen.Base36, as: Base36
   alias TellerApiProcgen.Static, as: Static
   alias TellerApiProcgen.Cfg, as: Cfg
-  alias TellerApiProcgen.Token, as: Token
-  alias TellerApiProcgen.Account, as: Account
   @prefix "txn_"
 
   @f_details_counterparty_type "organization"

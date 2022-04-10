@@ -42,6 +42,9 @@ config :teller_api_procgen,
 config :teller_api_http,
   proto: System.get_env("TELLER_API_HTTP_PROTO") || "http",
   host: System.get_env("TELLER_API_HTTP_HOST") || "localhost",
+  port:
+    (System.get_env("TELLER_API_HTTP_PORT") || "80")
+    |> String.to_integer(),
   cache_limit:
     (System.get_env("TELLER_API_HTTP_CACHE_LIMIT") || "1000")
     |> String.to_integer(),
@@ -55,9 +58,8 @@ config :logger,
   sync_threshold: 1000,
   handle_sasl_reports: false
 
-config :logger, :console,
-  level: :critical
+config :logger, :console, level: :critical
 
 config :logger, :file,
   level: (System.get_env("TELLER_API_LOGGER_LEVEL") || "error") |> String.to_atom(),
-  path:  (System.get_env("TELLER_API_LOGGER_DIR") || ".") <> "/file.log"
+  path: (System.get_env("TELLER_API_LOGGER_DIR") || ".") <> "/file.log"

@@ -1,4 +1,5 @@
 SUBDIRS = `ls . | grep -v '^__'` ## ignore directories masked with '__'
+TEST_ROOT := $(abspath ./)
 
 .PHONY: all build clean
 

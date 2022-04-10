@@ -1,0 +1,23 @@
+[doc]
+User can authorize
+
+Check if we get 200 OK response with valid auth token
+[enddoc]
+
+[include ../../__common/common.luxinc]
+[include ../../__common/http.luxinc]
+
+[shell app]
+  [invoke start-app]
+
+[shell http-auth-success]
+  [progress (check auth success case)]
+  [invoke http-call / $auth_token 200]
+  ??"accounts": "$TELLER_API_HTTP_PROTO://$TELLER_API_HTTP_HOST:$TELLER_API_HTTP_PORT/accounts"
+  [invoke check-ok]
+
+[shell http-auth-failure]
+  [progress (check auth failure case)]
+  [invoke http-call / test_faketoken 401]
+  ??"code": "forbidden"
+  [invoke check-ok]

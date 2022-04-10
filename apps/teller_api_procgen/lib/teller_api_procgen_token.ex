@@ -16,7 +16,7 @@ defmodule TellerApiProcgen.Token do
   @spec new(id :: pos_integer(), cfg :: Cfg.t()) :: T.t()
   def new(id, %Cfg{} = cfg) when is_integer(id) do
     pg_state = TAP.init_state(id, 0, 0)
-    {_pg_state_mut, accounts_n} = TAP.integer(pg_state, 1, cfg.accounts_max)
+    {pg_state, accounts_n} = TAP.integer(pg_state, 1, cfg.accounts_max)
 
     generate_accounts(
       %T{
@@ -62,6 +62,26 @@ defmodule TellerApiProcgen.Token do
   def to_string(id, cfg) do
     @prefix <> Base36.encode((id <<< Static.hash_base()) + checksum(id, cfg.secret_key))
   end
+
+  @spec valid?(str :: String.t(), cfg :: Cfg.t()) :: boolean()
+  def valid?(@prefix <> str, %Cfg{secret_key: secret}) do
+    case Base36.decode(str) do
+      :error ->
+        false
+
+      {:ok, value} ->
+        id = div(value, 1 <<< Static.hash_base())
+        checksum = rem(value, 1 <<< Static.hash_base())
+
+        if(checksum(id, secret) == checksum) do
+          true
+        else
+          false
+        end
+    end
+  end
+
+  def valid?(_, _), do: false
 
   defp generate_accounts(t, cfg) do
     accounts =

@@ -1,0 +1,30 @@
+[doc]
+User can get account details or 404 error
+
+Check if we get 200 OK response with valid auth token and account_id
+Check if we get 404 Not Found with valid auth token and invalid account_id
+[enddoc]
+
+[include ../../__common/common.luxinc]
+[include ../../__common/http.luxinc]
+
+[shell app]
+  [invoke start-app]
+
+[shell success]
+  [progress (check success case)]
+  [invoke http-call /accounts/$account_id/details $auth_token 200]
+  ??"account_id"
+  ??"account_number"
+  ??"links"
+  ??"account"
+  ??"self"
+  ??"routing_numbers"
+  ??"ach"
+  [invoke check-ok]
+
+[shell not-found]
+  [progress (check not found case)]
+  [invoke http-call /accounts/acc_fakeaccount/details $auth_token 404]
+  ??"code": "not_found"
+  [invoke check-ok]

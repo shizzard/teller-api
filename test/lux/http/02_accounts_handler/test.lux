@@ -1,0 +1,32 @@
+[doc]
+User can get list of accounts
+
+Check if we get 200 OK response with valid auth token
+[enddoc]
+
+[include ../../__common/common.luxinc]
+[include ../../__common/http.luxinc]
+
+[shell app]
+  [invoke start-app]
+
+[shell success]
+  [progress (check list account)]
+  [invoke http-call /accounts $auth_token 200]
+  ??"currency"
+  ??"enrollment_id"
+  ??"id"
+  ??"institution"
+  ??"id"
+  ??"name"
+  ??"last_four"
+  ??"links"
+  ??"balances"
+  ??"details"
+  ??"self"
+  ??"transactions"
+  ??"name"
+  ??"status"
+  ??"subtype"
+  ??"type"
+  [invoke check-ok]

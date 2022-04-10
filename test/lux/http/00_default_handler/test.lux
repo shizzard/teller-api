@@ -1,0 +1,23 @@
+[doc]
+User can get error 404
+
+Check if we get 404 Not Found response
+[enddoc]
+
+[include ../../__common/common.luxinc]
+[include ../../__common/http.luxinc]
+
+[shell app]
+  [invoke start-app]
+
+[shell http-auth-success]
+  [progress (check valid auth token case)]
+  [invoke http-call /not-found $auth_token 404]
+  ??"code": "not_found"
+  [invoke check-ok]
+
+[shell http-auth-failure]
+  [progress (check invalid auth token case)]
+  [invoke http-call /not-found test_faketoken 404]
+  ??"code": "not_found"
+  [invoke check-ok]

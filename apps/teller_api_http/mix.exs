@@ -23,6 +23,11 @@ defmodule TellerApiHttp.MixProject do
   end
 
   defp deps do
-    [{:cachex, "~> 3.4"}, {:teller_api_procgen, in_umbrella: true}]
+    [
+      {:cowboy, "~> 2.9"},
+      {:jason, "~> 1.2"},
+      {:cachex, "~> 3.4"},
+      {:teller_api_procgen, in_umbrella: true}
+    ]
   end
 end

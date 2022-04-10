@@ -1,0 +1,28 @@
+[global fail_pattern=[Ee][Rr][Rr][Oo][Rr]]
+[global iex_prompt=iex(.*)>]
+[global test_secret=testkey]
+
+[macro random-integer min max]
+  !awk -v min=$min -v max=$max 'BEGIN{srand(); print int(min+rand()*(max-min+1))}'
+  ?^(\d+)
+  [local rand=$1]
+  [invoke check-ok]
+[endmacro]
+
+[macro check-ok]
+  !echo ==$$?==
+  ?==0==
+  ?SH-PROMPT:
+[endmacro]
+
+[macro start-app]
+  !cd $$APPLICATION_ROOT
+  ?SH-PROMPT:
+  !make get-deps
+  ?SH-PROMPT:
+  [progress (starting application)]
+  !TELLER_API_PROCGEN_SECRET_KEY_B36=$test_secret make run
+  -$fail_pattern
+  ?$iex_prompt
+  [progress (application started)]
+[endmacro]
