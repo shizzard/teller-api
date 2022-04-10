@@ -35,9 +35,6 @@ PROBLEMS
 
 PLAN
 
-- LUX tests
-- HTTP API (cowboy REST FSM)
-- Teller specifics (headers etc), off-switch
 - Documentation!
 - Monitoring
 - dialyzer

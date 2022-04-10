@@ -14,34 +14,37 @@ Check if we get 404 Not Found with valid auth token and invalid transaction_id
 
 [shell success]
   [progress (check list transactions)]
-  [invoke http-call /accounts/$account_id/transactions/$transaction_id $auth_token 200]
-  ??"account_id"
-  ??"amount"
-  ??"date"
-  ??"description"
-  ??"details"
-  ??"category"
-  ??"counterparty"
-  ??"name"
-  ??"type"
-  ??"processing_status"
-  ??"id"
-  ??"links"
-  ??"account"
-  ??"self"
-  ??"running_balance"
-  ??"status"
-  ??"type"
+  [invoke http-call 200 acc_trx_id ""]
+  [invoke match-http-object-section-start]
+  ?account_id :
+  ?amount :
+  ?date :
+  ?description :
+  ?details_category :
+  ?details_counterparty_name :
+  ?details_counterparty_type :
+  ?details_processing_status :
+  ?id :
+  ?links_account :
+  ?links_self :
+  ?running_balance :
+  ?status :
+  ?type :
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell not-found-account-id]
   [progress (check not-found)]
-  [invoke http-call /accounts/acc_fakeaccount/transactions/$transaction_id $auth_token 404]
+  [local account_id=acc_faketoken]
+  [invoke http-call 404 acc_trx_id ""]
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell not-found-transaction-id]
   [progress (check not-found)]
-  [invoke http-call /accounts/$account_id/transactions/txn_faketransaction $auth_token 404]
+  [local transaction_id=txn_faketransaction]
+  [invoke http-call 404 acc_trx_id ""]
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell app]

@@ -14,7 +14,7 @@ defmodule TellerApiHttp.Cowboy.Common do
 
   def cb_init(req, state) do
     request_id = generate_request_id()
-    Logger.info("[#{request_id}] request #{:cowboy_req.path(req)}")
+    Logger.info("[#{request_id}] request '#{:cowboy_req.path(req)}' qs '#{:cowboy_req.qs(req)}'")
     {:cowboy_rest, req, State.request_id(state, request_id)}
   end
 
@@ -44,6 +44,7 @@ defmodule TellerApiHttp.Cowboy.Common do
     do: %{
       "content-type" => "application/json",
       "server" => "Teller API",
+      "teller-enrollment-status" => "healthy",
       "x-request-id" => State.request_id(state)
     }
 

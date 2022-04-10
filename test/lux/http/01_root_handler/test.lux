@@ -12,14 +12,20 @@ Check if we get 200 OK response with valid auth token
 
 [shell http-auth-success]
   [progress (check auth success case)]
-  [invoke http-call / $auth_token 200]
-  ??"accounts": "$TELLER_API_HTTP_PROTO://$TELLER_API_HTTP_HOST:$TELLER_API_HTTP_PORT/accounts"
+  [invoke http-call 200 root ""]
+  [invoke match-http-object-section-start]
+  ?accounts : $TELLER_API_HTTP_PROTO://$TELLER_API_HTTP_HOST:$TELLER_API_HTTP_PORT/accounts
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell http-auth-failure]
   [progress (check auth failure case)]
-  [invoke http-call / test_faketoken 401]
-  ??"code": "forbidden"
+  [local auth_token=test_faketoken]
+  [invoke http-call 401 root ""]
+  [invoke match-http-object-section-start]
+  ?+error_message :
+  ?+error_code : forbidden
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell app]

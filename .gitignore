@@ -1,6 +1,3 @@
-# The directory Mix will write compiled artifacts to.
-/_build/
-
 # If you run "mix test --cover", coverage assets end up here.
 /cover/
 
@@ -23,7 +20,9 @@ erl_crash.dump
 /tmp/
 
 # All underscored files and directories (_log, _tools, etc.)
-/_*
+/_build
+/_tools/lux
+/_log
 
 # LUX logs directory
 /lux_logs

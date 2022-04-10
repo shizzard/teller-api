@@ -2,20 +2,64 @@
 [global account_id=acc_babwpnaxf1xa]
 [global transaction_id=txn_14sjt5fwfp30n]
 
-[macro http-call uri token code]
-  !http http://localhost:8080$uri --pretty format --auth $token:
+[macro http-call code resource params]
+  !$TOOLS_TAPI_CLIENT \
+    -v \
+    --resource $resource \
+    --proto $TELLER_API_HTTP_PROTO \
+    --host $TELLER_API_HTTP_HOST \
+    --port :$TELLER_API_HTTP_PORT \
+    --token $auth_token \
+    --account $account_id \
+    --transaction $transaction_id \
+    $params
+  [invoke match-http-meta $code]
+[endmacro]
+
+[macro match-http-meta code]
   [invoke match-http-code $code]
+  [invoke match-http-header-section-start]
   [invoke match-http-header-value content-type application/json]
+  [invoke match-http-header-value server "Teller API"]
+  [invoke match-http-header-value teller-enrollment-status healthy]
+  [invoke match-http-header-exists x-request-id]
+  [invoke match-http-header-section-end]
 [endmacro]
 
 [macro match-http-code code]
-  ??HTTP/1.1 $code
+  ??>>> CODE
+  ??$code
+  ??<<< CODE
+[endmacro]
+
+[macro match-http-header-section-start]
+  ??>>> HEADERS
+[endmacro]
+
+[macro match-http-header-section-end]
+  ??<<< HEADERS
 [endmacro]
 
 [macro match-http-header-exists header]
-  ??$header:
+  ??$header :
 [endmacro]
 
 [macro match-http-header-value header value]
-  ??$header: $value
+  ??$header : $value
+[endmacro]
+
+[macro match-http-list-section-start count]
+  ??>>> LIST $count
+[endmacro]
+
+[macro match-http-list-section-end]
+  ??<<< LIST
+[endmacro]
+
+[macro match-http-object-section-start]
+  ??>>> OBJECT
+[endmacro]
+
+[macro match-http-object-section-end]
+  ??<<< OBJECT
 [endmacro]

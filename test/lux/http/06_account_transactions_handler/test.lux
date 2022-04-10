@@ -4,7 +4,9 @@ User can get list of transactions
 Check if we get 200 OK response with valid auth token
 Check if we get 404 Not Found with valid auth token and invalid account_id
 Check if we can limit transactions count with `count` request parameter
+Check if we can get 400 Bad Request with invalid `count` request parameter
 Check if we can shift transactions list with `from_id` request parameter
+Check if we can get 400 Bad Request with invalid `from_id` request parameter
 [enddoc]
 
 [include ../../__common/common.luxinc]
@@ -15,50 +17,69 @@ Check if we can shift transactions list with `from_id` request parameter
 
 [shell success]
   [progress (check list transactions)]
-  [invoke http-call /accounts/$account_id/transactions $auth_token 200]
-  ??"account_id"
-  ??"amount"
-  ??"date"
-  ??"description"
-  ??"details"
-  ??"category"
-  ??"counterparty"
-  ??"name"
-  ??"type"
-  ??"processing_status"
-  ??"id"
-  ??"links"
-  ??"account"
-  ??"self"
-  ??"running_balance"
-  ??"status"
-  ??"type"
+  [invoke http-call 200 acc_trxs ""]
+  [invoke match-http-object-section-start]
+  ?account_id :
+  ?amount :
+  ?date :
+  ?description :
+  ?details_category :
+  ?details_counterparty_name :
+  ?details_counterparty_type :
+  ?details_processing_status :
+  ?id :
+  ?links_account :
+  ?links_self :
+  ?running_balance :
+  ?status :
+  ?type :
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell not-found]
   [progress (check not-found)]
-  [invoke http-call /accounts/acc_fakeaccount/transactions $auth_token 404]
+  [local account_id=acc_faketoken]
+  [invoke http-call 404 acc_trxs ""]
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell count]
   [progress (check count parameter)]
-  [invoke http-call /accounts/$account_id/transactions?count=2 $auth_token 200]
-  ??"account_id"
-  ??"account_id"
+  [invoke http-call 200 acc_trxs "--count 2"]
+  [invoke match-http-list-section-start 2]
+  ?<<< RESPONSE
   [invoke check-ok]
 
-[shell from_id]
+[shell invalid-count-1]
+  [progress (check invalid count parameter /0/)]
+  [invoke http-call 400 acc_trxs "--count 0"]
+  ?<<< RESPONSE
+  [invoke check-ok]
+
+[shell invalid-count-2]
+  [progress (check invalid count parameter /x/)]
+  [invoke http-call 400 acc_trxs "--count foo"]
+  ?<<< RESPONSE
+  [invoke check-ok]
+
+[shell from-id]
   [progress (check from_id parameter)]
-  [invoke http-call /accounts/$account_id/transactions?from_id=$transaction_id $auth_token 200]
-  ??"account_id"
-  ??"account_id"
-  ??"account_id"
+  [invoke http-call 200 acc_trxs "--from_id $transaction_id"]
+  [invoke match-http-list-section-start 3]
+  ?<<< RESPONSE
   [invoke check-ok]
 
-[shell from_id_count]
+[shell invalid-from-id]
+  [progress (check invalid from_id parameter /tnx_fakeaccount/)]
+  [invoke http-call 400 acc_trxs "--from_id tnx_fakeaccount"]
+  ?<<< RESPONSE
+  [invoke check-ok]
+
+[shell from-id-count]
   [progress (check from_id and count parameter)]
-  [invoke http-call /accounts/$account_id/transactions?from_id=$transaction_id\&count=1 $auth_token 200]
-  ??"account_id"
+  [invoke http-call 200 acc_trxs "--count 1 --from_id $transaction_id"]
+  [invoke match-http-list-section-start 1]
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell app]

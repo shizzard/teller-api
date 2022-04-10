@@ -3,6 +3,8 @@
 
 APPLICATION_ROOT := $(abspath ./)
 LOG_ROOT := $(APPLICATION_ROOT)/_log
+TOOLS_ROOT := $(APPLICATION_ROOT)/_tools
+TOOLS_TAPI_CLIENT := $(TOOLS_ROOT)/teller_client.py
 BUILD_ROOT := $(APPLICATION_ROOT)/_build
 APPLICATION_EXEC := $(BUILD_ROOT)/dev/rel/teller_api/bin/teller_api
 MIX := $(shell which mix)

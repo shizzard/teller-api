@@ -12,23 +12,23 @@ Check if we get 200 OK response with valid auth token
 
 [shell success]
   [progress (check list account)]
-  [invoke http-call /accounts $auth_token 200]
-  ??"currency"
-  ??"enrollment_id"
-  ??"id"
-  ??"institution"
-  ??"id"
-  ??"name"
-  ??"last_four"
-  ??"links"
-  ??"balances"
-  ??"details"
-  ??"self"
-  ??"transactions"
-  ??"name"
-  ??"status"
-  ??"subtype"
-  ??"type"
+  [invoke http-call 200 accs ""]
+  [invoke match-http-object-section-start]
+  ?currency :
+  ?enrollment_id :
+  ?id :
+  ?institution_id :
+  ?institution_name :
+  ?last_four :
+  ?links_balances :
+  ?links_details :
+  ?links_self :
+  ?links_transactions :
+  ?name :
+  ?status :
+  ?subtype :
+  ?type :
+  ?<<< RESPONSE
   [invoke check-ok]
 
 [shell app]

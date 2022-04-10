@@ -118,21 +118,20 @@ defmodule TellerApiHttp.Cowboy.AccountTransactionsHandler do
   defp get_pagination_params_qs([], params), do: {:ok, params}
 
   defp get_pagination_params_qs([{"count", v} | rest], {_, from_id}) do
-    v =
-      try do
-        String.to_integer(v)
-      rescue
-        _ ->
-          {:error, {:invalid_param, "The \"count\" param must be an integer. You sent \"#{v}\"."}}
+    try do
+      v = String.to_integer(v)
+
+      case v > 0 do
+        true ->
+          get_pagination_params_qs(rest, {v, from_id})
+
+        false ->
+          {:error,
+           {:invalid_param, "The \"count\" param must be a positive integer. You sent \"#{v}\"."}}
       end
-
-    case v > 0 do
-      true ->
-        get_pagination_params_qs(rest, {v, from_id})
-
-      false ->
-        {:error,
-         {:invalid_param, "The \"count\" param must be a positive integer. You sent \"#{v}\"."}}
+    rescue
+      _ ->
+        {:error, {:invalid_param, "The \"count\" param must be an integer. You sent \"#{v}\"."}}
     end
   end
 
