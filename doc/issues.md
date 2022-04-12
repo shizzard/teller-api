@@ -8,8 +8,6 @@
 
 - [`TellerApiProcgen.Transaction`](/apps/teller_api_procgen/lib/teller_api_procgen_transaction.ex) is not fully proc-generated, thus the adjustments needed (dates are generated based on currrent date, balances/ledgers are calculated based on other transactions in a list).
 
-- [`TellerApiProcgen.Transaction`](/apps/teller_api_procgen/lib/teller_api_procgen_transaction.ex) has one single side-effect: current day is calculated instead of being configured.
-
 - Structs `from_string` functions should be refactored (lots of shared code).
 
 - [`TellerApiProcgen.Token`](/apps/teller_api_procgen/lib/teller_api_procgen_token.ex) might be optimized not to generate all accounts at once (be lazy).
@@ -27,7 +25,3 @@
 - Account resources (details, balances, etc.) are a mostly a boilerplate.
 
 - GET parameters are validated in a very simple way. In real-world application there sould be generalized validator.
-
-## Tests
-
-- There is no test for day change (check if it will generate a new set of transactions, keeping everything else the same).

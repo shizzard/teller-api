@@ -6,6 +6,8 @@
 
 [Tests](/doc/tests.md)
 
+[Monitoring](/doc/monitoring.md)
+
 [Known issues](/doc/issues.md)
 
 ## TL;DR: start
