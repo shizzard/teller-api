@@ -4,6 +4,7 @@ defmodule TellerApiProcgen do
     @enforce_keys [
       :secret_key,
       :secret_key_base,
+      :today_date,
       :accounts_max,
       :accounts_id_base,
       :accounts_enrollment_id_base,
@@ -19,6 +20,7 @@ defmodule TellerApiProcgen do
     defstruct [
       :secret_key,
       :secret_key_base,
+      :today_date,
       :accounts_max,
       :accounts_id_base,
       :accounts_enrollment_id_base,

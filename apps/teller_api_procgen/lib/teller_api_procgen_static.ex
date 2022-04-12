@@ -40,6 +40,7 @@ defmodule TellerApiProcgen.Static do
     %Cfg{
       secret_key: secret_key(),
       secret_key_base: secret_key_base(),
+      today_date: Date.utc_today() |> Date.to_gregorian_days(),
       accounts_max: Application.get_env(:teller_api_procgen, :accounts_per_token_max),
       accounts_id_base: Application.get_env(:teller_api_procgen, :accounts_id_base),
       accounts_enrollment_id_base:

@@ -1,6 +1,6 @@
 [global auth_token=test_3p63tqq]
 [global account_id=acc_babwpnaxf1xa]
-[global transaction_id=txn_14sjt5fwfp30n]
+[global transaction_id=none]
 
 [macro http-call code resource params]
   !$TOOLS_TAPI_CLIENT \

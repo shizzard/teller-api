@@ -103,11 +103,9 @@ defmodule TellerApiProcgen.Account do
   end
 
   defp generate_transactions(t, cfg) do
-    today = Date.utc_today() |> Date.to_gregorian_days()
-
     {_pg_state, balances_available_adjusted, balances_ledger_adjusted, trxs} =
       Enum.reduce(
-        (today - cfg.days_per_account + 1)..today,
+        (cfg.today_date - cfg.days_per_account + 1)..cfg.today_date,
         {t.pg_state, t.balances_available, t.balances_ledger, []},
         fn day, {pg_state_, balances_available_, balances_ledger_, acc} ->
           {pg_state_, trxs_n} = TellerApiProcgen.integer(pg_state_, 1, cfg.trxs_per_day)

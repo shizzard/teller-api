@@ -63,4 +63,20 @@ defmodule TellerApiProcgenAccountTest do
     assert {:error, :invalid_checksum} =
              Account.from_string("acc_invalidchecksum", 200, Static.config())
   end
+
+  test "account generates new transaction every day" do
+    cfg0 = %Cfg{
+      Static.config()
+      | today_date: Date.from_iso8601!("2022-04-12") |> Date.to_gregorian_days()
+    }
+
+    cfg1 = %Cfg{
+      Static.config()
+      | today_date: Date.from_iso8601!("2022-04-13") |> Date.to_gregorian_days()
+    }
+
+    t0 = Account.new(100, 200, cfg0)
+    t1 = Account.new(100, 200, cfg1)
+    assert Enum.slice(t0.trxs, 0..0) != Enum.slice(t1.trxs, 0..0)
+  end
 end
