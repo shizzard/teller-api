@@ -6,7 +6,7 @@ defmodule TellerApiHttp.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [cachex(), cowboy()]
+    children = [cachex(), cowboy(), metrics()]
     opts = [strategy: :one_for_one, name: TellerApiHttp.Supervisor]
     Supervisor.start_link(children, opts)
   end
@@ -44,6 +44,9 @@ defmodule TellerApiHttp.Application do
         {TellerApiHttp.http_host(),
          [
            # {PathMatch, Handler, InitialState}
+           # prometheus metrics handler
+           {"/metrics/[:registry]", :prometheus_cowboy2_handler, []},
+           # application handlers
            {"/", TellerApiHttp.Cowboy.RootHandler, %{}},
            {"/accounts", TellerApiHttp.Cowboy.AccountsHandler, %{}},
            {"/accounts/:account_id", TellerApiHttp.Cowboy.AccountIdHandler, %{}},
@@ -61,7 +64,18 @@ defmodule TellerApiHttp.Application do
     :cowboy.start_clear(
       :teller_api_http_cowboy,
       [{:port, TellerApiHttp.http_port()}],
-      %{env: %{dispatch: dispatch}}
+      %{
+        env: %{
+          dispatch: dispatch,
+          metrics_callback: &:prometheus_cowboy2_instrumenter.observe/1,
+          stream_handlers: [:cowboy_metrics_h]
+        }
+      }
     )
+  end
+
+  def metrics() do
+    TellerApiHttp.Metrics.declare_metrics()
+    {TellerApiHttp.Metrics, []}
   end
 end

@@ -27,6 +27,8 @@ defmodule TellerApiHttp.MixProject do
       {:cowboy, "~> 2.9"},
       {:jason, "~> 1.2"},
       {:cachex, "~> 3.4"},
+      {:prometheus, "~> 4.8"},
+      {:prometheus_cowboy, "~> 0.1.8"},
       {:teller_api_procgen, in_umbrella: true}
     ]
   end
