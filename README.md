@@ -1,3 +1,5 @@
+**Since Teller did not bother to give even formal feedback on the results of the test task, on which I spent several hours, I decided to opensource the project.**
+
 # TellerApi application
 
 [Configuration](/doc/configuration.md)
